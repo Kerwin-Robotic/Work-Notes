@@ -1,0 +1,69 @@
+Base Inertial Parameters equations
+
+Geometric parameters
+j       ant     sigma   mu      gamma   b       alpha   d       theta   r       
+1       0       0       1       0       0       0       0       q1      d1      
+2       1       0       1       0       0       pi/2    0       q2 - pi/20       
+3       2       0       1       0       0       0       a2      q3 - pi/20       
+
+Dynamic inertia parameters
+j       XX      XY      XZ      YY      YZ      ZZ      MX      MY      MZ      M       IA      
+1       L_1xx   L_1xy   L_1xz   L_1yy   L_1yz   L_1zz   l_1x    l_1y    l_1z    m_1     0       
+2       L_2xx   L_2xy   L_2xz   L_2yy   L_2yz   L_2zz   l_2x    l_2y    l_2z    m_2     0       
+3       L_3xx   L_3xy   L_3xz   L_3yy   L_3yz   L_3zz   l_3x    l_3y    l_3z    m_3     0       
+
+External forces and joint parameters
+j       FX      FY      FZ      CX      CY      CZ      FS      FV      QP      QDP     GAM     eta     k       
+1       0       0       0       0       0       0       0       0       dq1     ddq1    GAM1    0       0       
+2       0       0       0       0       0       0       0       0       dq2     ddq2    GAM2    0       0       
+3       0       0       0       0       0       0       0       0       dq3     ddq3    GAM3    0       0       
+
+Base velicities parameters
+axis    W0      WP0     V0      VP0     G       
+X       0       0       0       0       0       
+Y       0       0       0       0       0       
+Z       0       0       0       0       -g      
+
+Equations:
+C1 = cos(q1);
+S1 = sin(q1);
+C2 = sin(q2);
+S2 = cos(q2);
+C3 = sin(q3);
+S3 = cos(q3);
+LamMS213 = S3*a2;
+LamMS413 = 2*C3*a2;
+LamMS223 = -C3*a2;
+LamMS423 = 2*S3*a2;
+LamM43 = a2**2;
+XXR3 = L_3xx - L_3yy;
+YYR2 = L_2yy + L_3yy + LamM43*m_3;
+MZR2 = l_2z + l_3z;
+MR2 = m_2 + m_3;
+XXR2 = L_2xx + L_3yy - YYR2;
+XZR2 = L_2xz - a2*l_3z;
+ZZR2 = L_2zz + LamM43*m_3;
+MXR2 = a2*m_3 + l_2x;
+LamMS311 = -C1*d1;
+LamMS511 = -S1*d1;
+LamMS131 = 2*d1;
+LamM11 = d1**2;
+MR1 = MR2 + m_1;
+ZZR1 = L_1zz + YYR2;
+*=*
+
+Grouped inertial parameters
+
+Geometric parameters
+j       ant     sigma   mu      gamma   b       alpha   d       theta   r       
+1       0       0       1       0       0       0       0       q1      d1      
+2       1       0       1       0       0       pi/2    0       q2 - pi/20       
+3       2       0       1       0       0       0       a2      q3 - pi/20       
+
+Dynamic inertia parameters
+j       XX      XY      XZ      YY      YZ      ZZ      MX      MY      MZ      M       IA      
+1       0       0       0       0       0       ZZR1    0       0       0       0       0       
+2       XXR2    L_2xy   XZR2    0       L_2yz   ZZR2    MXR2    l_2y    0       0       0       
+3       XXR3    L_3xy   L_3xz   0       L_3yz   L_3zz   l_3x    l_3y    0       0       0       
+
+*=*

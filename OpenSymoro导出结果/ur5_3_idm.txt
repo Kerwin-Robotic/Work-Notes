@@ -1,0 +1,135 @@
+Inverse Dynamic Model using Newton-Euler Algorithm
+Robot with rigid joints and fixed base
+
+
+Geometric parameters
+j       ant     sigma   mu      gamma   b       alpha   d       theta   r       
+1       0       0       1       0       0       0       0       q1      d1      
+2       1       0       1       0       0       pi/2    0       q2 - pi/20       
+3       2       0       1       0       0       0       a2      q3 - pi/20       
+
+Dynamic inertia parameters
+j       XX      XY      XZ      YY      YZ      ZZ      MX      MY      MZ      M       IA      
+1       L_1xx   L_1xy   L_1xz   L_1yy   L_1yz   L_1zz   l_1x    l_1y    l_1z    m_1     0       
+2       L_2xx   L_2xy   L_2xz   L_2yy   L_2yz   L_2zz   l_2x    l_2y    l_2z    m_2     0       
+3       L_3xx   L_3xy   L_3xz   L_3yy   L_3yz   L_3zz   l_3x    l_3y    l_3z    m_3     0       
+
+External forces and joint parameters
+j       FX      FY      FZ      CX      CY      CZ      FS      FV      QP      QDP     GAM     eta     k       
+1       0       0       0       0       0       0       0       0       dq1     ddq1    GAM1    0       0       
+2       0       0       0       0       0       0       0       0       dq2     ddq2    GAM2    0       0       
+3       0       0       0       0       0       0       0       0       dq3     ddq3    GAM3    0       0       
+
+Base velicities parameters
+axis    W0      WP0     V0      VP0     G       
+X       0       0       0       0       0       
+Y       0       0       0       0       0       
+Z       0       0       0       0       -g      
+
+Equations:
+C1 = cos(q1);
+S1 = sin(q1);
+C2 = sin(q2);
+S2 = cos(q2);
+C3 = sin(q3);
+S3 = cos(q3);
+DV61 = dq1**2;
+W12 = -S2*dq1;
+W22 = C2*dq1;
+WP12 = -S2*ddq1 + W22*dq2;
+WP22 = C2*ddq1 - W12*dq2;
+DV12 = W12**2;
+DV22 = W12*W22;
+DV32 = W12*dq2;
+DV42 = W22**2;
+DV52 = W22*dq2;
+DV62 = dq2**2;
+U112 = -DV42 - DV62;
+U212 = DV22 + ddq2;
+U312 = DV32 - WP22;
+U122 = DV22 - ddq2;
+U222 = -DV12 - DV62;
+U322 = DV52 + WP12;
+U132 = DV32 + WP22;
+U232 = DV52 - WP12;
+U332 = -DV12 - DV42;
+VP12 = -S2*g;
+VP22 = C2*g;
+W13 = C3*W12 - S3*W22;
+W23 = C3*W22 + S3*W12;
+W33 = dq2 + dq3;
+WP13 = C3*WP12 - S3*WP22 + W23*dq3;
+WP23 = C3*WP22 + S3*WP12 - W13*dq3;
+WP33 = ddq2 + ddq3;
+DV13 = W13**2;
+DV23 = W13*W23;
+DV33 = W13*W33;
+DV43 = W23**2;
+DV53 = W23*W33;
+DV63 = W33**2;
+U113 = -DV43 - DV63;
+U213 = DV23 + WP33;
+U313 = DV33 - WP23;
+U123 = DV23 - WP33;
+U223 = -DV13 - DV63;
+U323 = DV53 + WP13;
+U133 = DV33 + WP23;
+U233 = DV53 - WP13;
+U333 = -DV13 - DV43;
+VSP13 = U112*a2 + VP12;
+VSP23 = U212*a2 + VP22;
+VSP33 = U312*a2;
+VP13 = C3*VSP13 - S3*VSP23;
+VP23 = C3*VSP23 + S3*VSP13;
+F11 = -DV61*l_1x - ddq1*l_1y;
+F21 = -DV61*l_1y + ddq1*l_1x;
+F31 = g*m_1;
+PSI11 = L_1xz*dq1;
+PSI21 = L_1yz*dq1;
+PSI31 = L_1zz*dq1;
+No11 = L_1xz*ddq1 - PSI21*dq1;
+No21 = L_1yz*ddq1 + PSI11*dq1;
+No31 = L_1zz*ddq1;
+F12 = U112*l_2x + U122*l_2y + U132*l_2z + VP12*m_2;
+F22 = U212*l_2x + U222*l_2y + U232*l_2z + VP22*m_2;
+F32 = U312*l_2x + U322*l_2y + U332*l_2z;
+PSI12 = L_2xx*W12 + L_2xy*W22 + L_2xz*dq2;
+PSI22 = L_2xy*W12 + L_2yy*W22 + L_2yz*dq2;
+PSI32 = L_2xz*W12 + L_2yz*W22 + L_2zz*dq2;
+No12 = L_2xx*WP12 + L_2xy*WP22 + L_2xz*ddq2 - PSI22*dq2 + PSI32*W22;
+No22 = L_2xy*WP12 + L_2yy*WP22 + L_2yz*ddq2 + PSI12*dq2 - PSI32*W12;
+No32 = L_2xz*WP12 + L_2yz*WP22 + L_2zz*ddq2 - PSI12*W22 + PSI22*W12;
+F13 = U113*l_3x + U123*l_3y + U133*l_3z + VP13*m_3;
+F23 = U213*l_3x + U223*l_3y + U233*l_3z + VP23*m_3;
+F33 = U313*l_3x + U323*l_3y + U333*l_3z + VSP33*m_3;
+PSI13 = L_3xx*W13 + L_3xy*W23 + L_3xz*W33;
+PSI23 = L_3xy*W13 + L_3yy*W23 + L_3yz*W33;
+PSI33 = L_3xz*W13 + L_3yz*W23 + L_3zz*W33;
+No13 = L_3xx*WP13 + L_3xy*WP23 + L_3xz*WP33 - PSI23*W33 + PSI33*W23;
+No23 = L_3xy*WP13 + L_3yy*WP23 + L_3yz*WP33 + PSI13*W33 - PSI33*W13;
+No33 = L_3xz*WP13 + L_3yz*WP23 + L_3zz*WP33 - PSI13*W23 + PSI23*W13;
+N13 = No13 - VP23*l_3z + VSP33*l_3y;
+N23 = No23 + VP13*l_3z - VSP33*l_3x;
+N33 = No33 - VP13*l_3y + VP23*l_3x;
+FDI13 = C3*F13 + F23*S3;
+FDI23 = C3*F23 - F13*S3;
+E12 = F12 + FDI13;
+E22 = F22 + FDI23;
+E32 = F32 + F33;
+N12 = C3*N13 + N23*S3 + No12 - VP22*l_2z;
+N22 = C3*N23 - F33*a2 - N13*S3 + No22 + VP12*l_2z;
+N32 = FDI23*a2 + N33 + No32 - VP12*l_2y + VP22*l_2x;
+FDI12 = C2*E12 + E22*S2;
+FDI32 = C2*E22 - E12*S2;
+E11 = F11 + FDI12;
+E21 = -E32 + F21;
+E31 = F31 + FDI32;
+N11 = C2*N12 + N22*S2 + No11 + g*l_1y;
+N21 = -N32 + No21 - g*l_1x;
+N31 = C2*N22 - N12*S2 + No31;
+FDI11 = C1*E11 - E21*S1;
+FDI21 = C1*E21 + E11*S1;
+GAM1 = N31;
+GAM2 = N32;
+GAM3 = N33;
+*=*
